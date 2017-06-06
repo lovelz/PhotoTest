@@ -1,12 +1,14 @@
 package com.lz.selectphoto.bean;
 
+import java.io.Serializable;
+
 /**
  * 照片相关信息
  * Created by liuzhu
  * on 2017/6/5.
  */
 
-public class PhotoInfo {
+public class PhotoInfo implements Serializable{
 
     //照片ID
     private int photoId;

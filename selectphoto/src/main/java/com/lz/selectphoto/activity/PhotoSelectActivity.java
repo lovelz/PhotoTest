@@ -14,8 +14,10 @@ import android.view.View;
 
 import com.lz.selectphoto.R;
 import com.lz.selectphoto.adapter.PhotoSelectAdapter;
+import com.lz.selectphoto.bean.PhotoFolder;
 import com.lz.selectphoto.bean.PhotoInfo;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -63,7 +65,7 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void onClick(View v) {
-        
+
     }
 
     private class PhotoLoaderListener implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -91,6 +93,13 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
         public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
             if (data != null){
                 final ArrayList<PhotoInfo> photoInfoList = new ArrayList<>();
+                final ArrayList<PhotoFolder> photoFolderList = new ArrayList<>();
+
+                //添加默认的文件夹，里面包含所有的照片
+                PhotoFolder defaultFolder = new PhotoFolder();
+                defaultFolder.setFolderName("最近照片");
+                defaultFolder.setFolderPath("");
+                photoFolderList.add(defaultFolder);
 
                 int count = data.getCount();
                 if (count > 0){
@@ -111,10 +120,31 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
                         //添加至集合中
                         photoInfoList.add(photoInfo);
 
+                        File photoFile = new File(photoPath);
+                        //得到照片文件的上级目录
+                        File folderFile = photoFile.getParentFile();
+                        PhotoFolder photoFolder = new PhotoFolder();
+                        //设置照片文件的属性
+                        photoFolder.setFolderName(folderFile.getName());
+                        photoFolder.setFolderPath(folderFile.getAbsolutePath());
+
+                        if (!photoFolderList.contains(photoFolder)){
+                            photoFolder.getPhotoInfoList().add(photoInfo);
+                            photoFolder.setFolderCover(photoInfo.getPhotoPath());//默认相册封面
+                            photoFolderList.add(photoFolder);
+                        }else {
+                            PhotoFolder f = photoFolderList.get(photoFolderList.indexOf(photoFolder));
+                            f.getPhotoInfoList().add(photoInfo);
+                        }
+
                     }while (data.moveToNext());
                 }
 
                 notifyPhotoAdapter(photoInfoList);
+
+                //设置最近照片
+                defaultFolder.getPhotoInfoList().addAll(photoInfoList);
+                defaultFolder.setFolderCover(photoInfoList.size() > 0 ? photoInfoList.get(0).getPhotoPath() : null);
             }
         }
 
