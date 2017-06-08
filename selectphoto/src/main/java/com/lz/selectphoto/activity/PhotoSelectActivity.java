@@ -159,6 +159,7 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
      * @param photoInfoList
      */
     private void notifyPhotoAdapter(ArrayList<PhotoInfo> photoInfoList) {
+        photoSelectAdapter.clear();
         photoSelectAdapter.addAll(photoInfoList);
     }
 

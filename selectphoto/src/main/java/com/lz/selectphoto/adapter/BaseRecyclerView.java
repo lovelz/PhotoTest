@@ -8,8 +8,6 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.R.attr.id;
-
 /**
  * Created by liuzhu
  * on 2017/6/6.
@@ -34,25 +32,39 @@ public abstract class BaseRecyclerView<T> extends RecyclerView.Adapter {
         if (holder != null){
             holder.itemView.setTag(holder);
         }
-        return null;
+        return holder;
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        onBindDefaultViewHolder(holder, position);
     }
 
     protected abstract RecyclerView.ViewHolder onCreateDefaultHolder(ViewGroup parent, int viewType);
 
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
-    }
+    protected abstract void onBindDefaultViewHolder(RecyclerView.ViewHolder holder, int position);
 
     @Override
     public int getItemCount() {
         return mDatas.size();
     }
 
+    /**
+     * 添加多个数据
+     * @param datas
+     */
     public void addAll(List<T> datas){
         if (datas != null){
             mDatas.addAll(datas);
             notifyItemRangeInserted(this.mDatas.size(), datas.size());
         }
+    }
+
+    /**
+     * 清除所有数据
+     */
+    public final void clear(){
+        this.mDatas.clear();
+        notifyDataSetChanged();
     }
 }
