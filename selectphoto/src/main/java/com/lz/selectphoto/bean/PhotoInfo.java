@@ -22,6 +22,8 @@ public class PhotoInfo implements Serializable{
     //照片所在文件夹名称
     private String photoFolderName;
 
+    private int photoNumber;
+
     public int getPhotoId() {
         return photoId;
     }
@@ -52,5 +54,13 @@ public class PhotoInfo implements Serializable{
 
     public void setPhotoFolderName(String photoFolderName) {
         this.photoFolderName = photoFolderName;
+    }
+
+    public int getPhotoNumber() {
+        return photoNumber;
+    }
+
+    public void setPhotoNumber(int photoNumber) {
+        this.photoNumber = photoNumber;
     }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.lz.selectphoto.view.SquareLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="120dp"
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
     <ImageView
@@ -10,4 +10,23 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop"/>
 
-</LinearLayout>
+    <FrameLayout
+        android:id="@+id/photo_select"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="end">
+
+        <TextView
+            android:id="@+id/photo_number"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:background="@drawable/sharp_unselect_bg"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:maxLines="1"/>
+
+    </FrameLayout>
+
+</com.lz.selectphoto.view.SquareLayout>

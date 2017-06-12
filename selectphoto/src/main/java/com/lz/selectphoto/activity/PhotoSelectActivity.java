@@ -11,11 +11,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 
 import com.lz.selectphoto.R;
 import com.lz.selectphoto.adapter.PhotoSelectAdapter;
 import com.lz.selectphoto.bean.PhotoFolder;
 import com.lz.selectphoto.bean.PhotoInfo;
+import com.lz.selectphoto.utils.TDevice;
+import com.lz.selectphoto.view.SpaceGridItemDecoration;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -33,6 +36,7 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
 
     private PhotoLoaderListener mLoaderListener = new PhotoLoaderListener();
     private PhotoSelectAdapter photoSelectAdapter;
+    private Button btSend;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,11 +55,13 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
 
     private void initView() {
         mPhotoRecycler = (RecyclerView) findViewById(R.id.photo_select_recycler);
+        btSend = (Button) findViewById(R.id.photo_send);
     }
 
     private void initData() {
         //set layoutManager
         mPhotoRecycler.setLayoutManager(new GridLayoutManager(this, 3));
+        mPhotoRecycler.addItemDecoration(new SpaceGridItemDecoration((int) TDevice.dipToPx(getResources(), 2)));
         //set adapter
         photoSelectAdapter = new PhotoSelectAdapter(this);
         mPhotoRecycler.setAdapter(photoSelectAdapter);
@@ -116,6 +122,7 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
                         photoInfo.setPhotoPath(photoPath);
                         photoInfo.setPhotoName(photoName);
                         photoInfo.setPhotoFolderName(photoFolderName);
+                        photoInfo.setPhotoNumber(0);
 
                         //添加至集合中
                         photoInfoList.add(photoInfo);
