@@ -12,12 +12,17 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.lz.selectphoto.R;
+import com.lz.selectphoto.adapter.PhotoFolderAdapter;
 import com.lz.selectphoto.adapter.PhotoSelectAdapter;
 import com.lz.selectphoto.bean.PhotoFolder;
 import com.lz.selectphoto.bean.PhotoInfo;
 import com.lz.selectphoto.utils.TDevice;
+import com.lz.selectphoto.view.FolderPopupWindow;
 import com.lz.selectphoto.view.SpaceGridItemDecoration;
 
 import java.io.File;
@@ -37,6 +42,11 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
     private PhotoLoaderListener mLoaderListener = new PhotoLoaderListener();
     private PhotoSelectAdapter photoSelectAdapter;
     private Button btSend;
+    private FolderPopupWindow mFolderPopup;
+    private LinearLayout mFolderSelect;
+    private ImageView mFolderIcon;
+    private PhotoFolderAdapter mFolderAdapter;
+    private TextView mFolderName;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,8 +64,13 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void initView() {
+        mFolderName = (TextView) findViewById(R.id.select_folder_name);
+        mFolderIcon = (ImageView) findViewById(R.id.folder_select_icon);
         mPhotoRecycler = (RecyclerView) findViewById(R.id.photo_select_recycler);
         btSend = (Button) findViewById(R.id.photo_send);
+
+        mFolderSelect = (LinearLayout) findViewById(R.id.photo_folder_select);
+        mFolderSelect.setOnClickListener(this);
     }
 
     private void initData() {
@@ -66,12 +81,40 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
         photoSelectAdapter = new PhotoSelectAdapter(this);
         mPhotoRecycler.setAdapter(photoSelectAdapter);
 
+        mFolderAdapter = new PhotoFolderAdapter(this);
+
         getSupportLoaderManager().initLoader(0, null, mLoaderListener);
     }
 
     @Override
     public void onClick(View v) {
+        if (v.getId() == R.id.photo_folder_select) {
+            //弹出选择图片文件夹
+            if (mFolderPopup == null){
+                FolderPopupWindow folderPopupWindow = new FolderPopupWindow(this, new FolderPopupWindow.Callback() {
+                    @Override
+                    public void onSelect(FolderPopupWindow popupWindow, PhotoFolder folder) {
+                        notifyPhotoAdapter(folder.getPhotoInfoList());
+                        mPhotoRecycler.scrollToPosition(0);
+                        popupWindow.dismiss();
+                        mFolderName.setText(folder.getFolderName());
+                    }
 
+                    @Override
+                    public void onDismiss() {
+                        mFolderIcon.setImageResource(R.drawable.up_pull);
+                    }
+
+                    @Override
+                    public void onShow() {
+                        mFolderIcon.setImageResource(R.drawable.down_pull);
+                    }
+                });
+                folderPopupWindow.setAdapter(mFolderAdapter);
+                mFolderPopup = folderPopupWindow;
+            }
+            mFolderPopup.showAsDropDown(mFolderSelect);
+        }
     }
 
     private class PhotoLoaderListener implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -152,6 +195,8 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
                 //设置最近照片
                 defaultFolder.getPhotoInfoList().addAll(photoInfoList);
                 defaultFolder.setFolderCover(photoInfoList.size() > 0 ? photoInfoList.get(0).getPhotoPath() : null);
+
+                mFolderAdapter.reset(photoFolderList);
             }
         }
 

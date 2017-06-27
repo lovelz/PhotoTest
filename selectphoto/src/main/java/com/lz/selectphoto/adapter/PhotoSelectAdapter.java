@@ -11,8 +11,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.lz.selectphoto.R;
 import com.lz.selectphoto.bean.PhotoInfo;
-
-import static android.R.string.cancel;
+import com.lz.selectphoto.utils.ToastUtils;
 
 /**
  * 照片列表适配器
@@ -20,7 +19,7 @@ import static android.R.string.cancel;
  * on 2017/6/5.
  */
 
-public class PhotoSelectAdapter extends BaseRecyclerView<PhotoInfo>{
+public class PhotoSelectAdapter extends BaseRecyclerAdapter<PhotoInfo> {
 
     public PhotoSelectAdapter(Context context){
         super(context);
@@ -64,6 +63,10 @@ public class PhotoSelectAdapter extends BaseRecyclerView<PhotoInfo>{
                 if (currentNumber > maxNumber){
                     maxNumber = currentNumber;
                 }
+            }
+            if (maxNumber == 9){
+                ToastUtils.showTextToast(mContext, "最多只能选择9张图片哦");
+                return;
             }
             int mNumberText = maxNumber + 1;
             mDatas.get(position).setPhotoNumber(mNumberText);
