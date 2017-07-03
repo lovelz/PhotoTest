@@ -27,6 +27,7 @@ import com.lz.selectphoto.view.SpaceGridItemDecoration;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 照片选择界面
@@ -34,7 +35,8 @@ import java.util.ArrayList;
  * on 2017/6/5.
  */
 
-public class PhotoSelectActivity extends AppCompatActivity implements View.OnClickListener{
+public class PhotoSelectActivity extends AppCompatActivity implements View.OnClickListener,
+        PhotoSelectAdapter.onPhotoSelectListener{
 
     //显示照片列表的RecyclerView
     private RecyclerView mPhotoRecycler;
@@ -47,6 +49,9 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
     private ImageView mFolderIcon;
     private PhotoFolderAdapter mFolderAdapter;
     private TextView mFolderName;
+
+    //选中的图片
+    private List<PhotoInfo> mSelectPhoto = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,6 +85,7 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
         //set adapter
         photoSelectAdapter = new PhotoSelectAdapter(this);
         mPhotoRecycler.setAdapter(photoSelectAdapter);
+        photoSelectAdapter.setOnPhotoSelectListener(this);
 
         mFolderAdapter = new PhotoFolderAdapter(this);
 
@@ -114,6 +120,22 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
                 mFolderPopup = folderPopupWindow;
             }
             mFolderPopup.showAsDropDown(mFolderSelect);
+        }
+    }
+
+    /**
+     * 回调回来选择的图片（可能为选中，也可能为取消选中）
+     * 通过getPhotoNumber()来判断是否为选中状态
+     * @param photoInfo
+     */
+    @Override
+    public void onPhotoSelect(PhotoInfo photoInfo) {
+        if (photoInfo.getPhotoNumber() == 0){
+            mSelectPhoto.remove(photoInfo);
+            btSend.setText("发送(" + mSelectPhoto.size() + ")");
+        }else {
+            mSelectPhoto.add(photoInfo);
+            btSend.setText("发送(" + mSelectPhoto.size() + ")");
         }
     }
 
@@ -215,4 +237,9 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
         photoSelectAdapter.addAll(photoInfoList);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mSelectPhoto.clear();
+    }
 }

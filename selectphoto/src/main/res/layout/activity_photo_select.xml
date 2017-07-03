@@ -75,7 +75,7 @@
             android:layout_gravity="end|center_vertical"
             android:layout_marginRight="10dp"
             android:background="#00ff00"
-            android:text="发送"
+            android:text="发送（0）"
             android:textColor="@color/black"
             android:textSize="14sp"/>
 

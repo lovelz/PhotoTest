@@ -87,6 +87,10 @@ public class PhotoSelectAdapter extends BaseRecyclerAdapter<PhotoInfo> {
                 R.drawable.sharp_unselect_bg : R.drawable.sharp_select_bg);
         notifyDataSetChanged();
 
+        if (onPhotoSelectListener != null){
+            onPhotoSelectListener.onPhotoSelect(mDatas.get(position));
+        }
+
     }
 
     private class PhotoHolder extends RecyclerView.ViewHolder{
@@ -102,8 +106,13 @@ public class PhotoSelectAdapter extends BaseRecyclerAdapter<PhotoInfo> {
         }
     }
 
-    public interface onPhotoSelect{
+    private onPhotoSelectListener onPhotoSelectListener;
+
+    public interface onPhotoSelectListener{
         void onPhotoSelect(PhotoInfo photoInfo);
     }
 
+    public void setOnPhotoSelectListener(PhotoSelectAdapter.onPhotoSelectListener onPhotoSelectListener) {
+        this.onPhotoSelectListener = onPhotoSelectListener;
+    }
 }
