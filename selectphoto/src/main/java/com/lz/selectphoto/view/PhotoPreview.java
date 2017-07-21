@@ -61,8 +61,67 @@ public class PhotoPreview extends AppCompatImageView{
     public boolean onTouchEvent(MotionEvent event) {
         final int action = event.getAction();
 
+        if (action == MotionEvent.ACTION_DOWN){
+            cancleAnimation();
+        }
+
         mScaleDetector.onTouchEvent(event);
         mFlatDetector.onTouchEvent(event);
+
+        if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL){
+            if (isAutoScale){
+                isAutoScale = false;
+            }else {
+                if (scale < 1){
+                    ValueAnimator animator = getResetScaleAnimator();
+                    animator.setFloatValues(scale, 1.f);
+                    animator.addUpdateListener(getOnScaleAnimationUpdate());
+                    animator.start();
+                }
+                final float mScaledWidth = mBoundWidth * scale;
+                final float mScaledHeight = mBoundHeight * scale;
+
+                final float mDiffX = getDiffX();
+                final float mDiffY = getDiffY();
+
+                //左右边界重置
+                if (mScaledWidth >= getWidth() && mDiffX != 0){
+                    ValueAnimator animator = getResetXAnimator();
+                    animator.setFloatValues(translateLeft, translateLeft - mDiffX);
+                    animator.addUpdateListener(getOnTranslateXAnimationUpdate());
+                    animator.start();
+                }
+
+                //上下边界重置
+                if (mScaledHeight >= getHeight() && mDiffY != 0){
+                    ValueAnimator animator = getResetYAnimator();
+                    animator.setFloatValues(translateTop, translateTop - mDiffY);
+                    animator.addUpdateListener(getOnTranslateYAnimationUpdate());
+                    animator.start();
+                }
+
+                //以width为中心
+                if (mScaledWidth < getWidth() && mScaledHeight >= getHeight() && mDiffX != 0){
+                    ValueAnimator animator = getResetXAnimator();
+                    animator.setFloatValues(translateLeft, 0);
+                    animator.addUpdateListener(getOnTranslateXAnimationUpdate());
+                    animator.start();
+                }
+
+                //以height为中心
+                if (mScaledHeight < getHeight() && mScaledWidth >= getWidth() && mDiffY != 0){
+                    ValueAnimator animator = getResetYAnimator();
+                    animator.setFloatValues(translateTop, (getHeight() - mScaledHeight) / 2.f);
+                    animator.addUpdateListener(getOnTranslateYAnimationUpdate());
+                    animator.start();
+                }
+
+                if (mScaledWidth < getWidth() && mScaledHeight < getHeight()){
+                    resetDefaultState();
+                }
+            }
+        }
+
         return true;
     }
 
@@ -139,6 +198,7 @@ public class PhotoPreview extends AppCompatImageView{
         //伸缩平移
         canvas.translate(translateLeft, translateTop);
         canvas.scale(scale, scale);
+        Log.d(TAG, "translateLeft-->  " + translateLeft + "  translateTop-->  " + translateTop);
 
         mDrawable.draw(canvas);
         canvas.restoreToCount(saveCount);
@@ -239,12 +299,55 @@ public class PhotoPreview extends AppCompatImageView{
 
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            return super.onFling(e1, e2, velocityX, velocityY);
+            if (mBoundWidth * scale > getWidth()) {
+                float sx = translateLeft + (1f / 2f) * velocityX * 0.5f * 0.5f;
+                sx = getExplicitTranslateLeft(sx);
+                ValueAnimator mResetXAnimator = getResetXAnimator();
+                mResetXAnimator.setDuration(300);
+                mResetXAnimator.setInterpolator(mDecInterpolator);
+                mResetXAnimator.setFloatValues(translateLeft, sx);
+                mResetXAnimator.addUpdateListener(getOnTranslateXAnimationUpdate());
+                mResetXAnimator.start();
+            }
+
+            if (mBoundHeight * scale > getHeight()) {
+                float sy = translateTop + (1f / 2f) * velocityY * 0.5f * 0.5f;
+                sy = getExplicitTranslateTop(sy);
+                ValueAnimator mResetYAnimator = getResetYAnimator();
+                mResetYAnimator.setDuration(300);
+                mResetYAnimator.setInterpolator(mDecInterpolator);
+                mResetYAnimator.setFloatValues(translateTop, sy);
+                mResetYAnimator.addUpdateListener(getOnTranslateYAnimationUpdate());
+                mResetYAnimator.start();
+            }
+
+            return true;
         }
 
         @Override
         public boolean onDoubleTap(MotionEvent e) {
-            return super.onDoubleTap(e);
+            isAutoScale = true;
+            ValueAnimator mResetScaleAnimator = getResetScaleAnimator();
+
+            if (scale == 1.f) {
+                mResetScaleAnimator.setFloatValues(1.f, 2.f);
+
+                ValueAnimator mResetXAnimator = getResetXAnimator();
+                ValueAnimator mResetYAnimator = getResetYAnimator();
+                mResetXAnimator.setFloatValues(translateLeft, (getWidth() - mBoundWidth * 2.f) / 2.f);
+                mResetYAnimator.setFloatValues(translateTop, getDefaultTranslateTop(getHeight(), mBoundHeight * 2));
+                mResetXAnimator.addUpdateListener(getOnTranslateXAnimationUpdate());
+                mResetYAnimator.addUpdateListener(getOnTranslateYAnimationUpdate());
+                mResetXAnimator.start();
+                mResetYAnimator.start();
+            } else {
+                mResetScaleAnimator.setFloatValues(scale, 1.f);
+                resetDefaultState();
+            }
+
+            mResetScaleAnimator.addUpdateListener(getOnScaleAnimationUpdate());
+            mResetScaleAnimator.start();
+            return true;
         }
     }
 
@@ -431,5 +534,20 @@ public class PhotoPreview extends AppCompatImageView{
         if (resetTranslateYAnimator != null && resetTranslateYAnimator.isRunning()){
             resetTranslateYAnimator.cancel();
         }
+    }
+
+    private void resetDefaultState() {
+        if (translateLeft != 0) {
+            ValueAnimator mTranslateXAnimator = getResetXAnimator();
+            mTranslateXAnimator.setFloatValues(translateLeft, 0);
+            mTranslateXAnimator.addUpdateListener(getOnTranslateXAnimationUpdate());
+            mTranslateXAnimator.start();
+        }
+
+        ValueAnimator mTranslateYAnimator = getResetYAnimator();
+        mTranslateYAnimator.setFloatValues(translateTop, getDefaultTranslateTop(getHeight(), mBoundHeight));
+        mTranslateYAnimator.addUpdateListener(getOnTranslateYAnimationUpdate());
+        mTranslateYAnimator.start();
+
     }
 }

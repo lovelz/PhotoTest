@@ -4,9 +4,7 @@
     android:layout_height="match_parent">
 
     <com.lz.selectphoto.view.PhotoPreview
-        android:id="@+id/enter_scale_img"
+        android:id="@+id/photo_img"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="选择照片"
-        android:src="@mipmap/ic_launcher"/>
+        android:layout_height="match_parent"/>
 </FrameLayout>
