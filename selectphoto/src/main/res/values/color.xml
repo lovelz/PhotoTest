@@ -3,6 +3,7 @@
 
     <color name="white">#FFFFFFFF</color>
     <color name="black">#000000</color>
-    <color name="theme_color">#00ff00</color>
+    <color name="translate">#00000000</color>
+    <color name="theme_color">#303F9F</color>
 
 </resources>
