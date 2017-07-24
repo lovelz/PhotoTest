@@ -164,7 +164,7 @@ public class PhotoPreview extends AppCompatImageView{
         drawable.setBounds(0, 0, mBoundWidth, mBoundHeight);
 
         translateLeft = 0;
-        translateTop = getDefaultTranslateTop(mBoundHeight, height);
+        translateTop = getDefaultTranslateTop(height, mBoundHeight);
     }
 
     /**
@@ -173,7 +173,7 @@ public class PhotoPreview extends AppCompatImageView{
      * @param height 原高度
      * @return
      */
-    private float getDefaultTranslateTop(int mBoundHeight, int height) {
+    private float getDefaultTranslateTop(int height, int mBoundHeight) {
         float top = (height - mBoundHeight) / 2.f;
         return top > 0 ? top : 0;
     }
@@ -229,10 +229,10 @@ public class PhotoPreview extends AppCompatImageView{
             final float mScaleHeight = mBoundHeight * scale;
 
             //得到偏移量
-//            translateLeft = getWidth() / 2.0f - (getWidth() / 2.0f - translateLeft) * mScaleWidth / mOldScaleWidth;
-            translateLeft = getWidth() / 2.0f - (mScaleWidth / 2.0f);
-//            translateTop = getHeight() / 2.0f -(getHeight() / 2.0f - translateTop) * mScaleHeight / mOldScaleHeight;
-            translateTop = getHeight() / 2.0f - (mScaleHeight / 2.0f);
+            translateLeft = getWidth() / 2.0f - (getWidth() / 2.0f - translateLeft) * mScaleWidth / mOldScaleWidth;
+//            translateLeft = getWidth() / 2.0f - (mScaleWidth / 2.0f);
+            translateTop = getHeight() / 2.0f -(getHeight() / 2.0f - translateTop) * mScaleHeight / mOldScaleHeight;
+//            translateTop = getHeight() / 2.0f - (mScaleHeight / 2.0f);
 
             final float diffX = getDiffX();
             final float diffY = getDiffY();

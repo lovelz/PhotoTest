@@ -13,6 +13,8 @@ import com.lz.selectphoto.R;
 import com.lz.selectphoto.bean.PhotoInfo;
 import com.lz.selectphoto.utils.ToastUtils;
 
+import java.util.List;
+
 /**
  * 照片列表适配器
  * Created by liuzhu
@@ -21,8 +23,14 @@ import com.lz.selectphoto.utils.ToastUtils;
 
 public class PhotoSelectAdapter extends BaseRecyclerAdapter<PhotoInfo> {
 
+    private List<PhotoInfo> mAllPhoto;
+
     public PhotoSelectAdapter(Context context){
         super(context);
+    }
+
+    public void setAllPhoto(List<PhotoInfo> mAllPhoto) {
+        this.mAllPhoto = mAllPhoto;
     }
 
     @Override
@@ -58,8 +66,8 @@ public class PhotoSelectAdapter extends BaseRecyclerAdapter<PhotoInfo> {
 
         if (mNumber == 0) {//选中状态
             int maxNumber = 0;
-            for (int i = 0; i < mDatas.size(); i++) {//得到最大的选中数字
-                int currentNumber = mDatas.get(i).getPhotoNumber();
+            for (int i = 0; i < mAllPhoto.size(); i++) {//得到最大的选中数字
+                int currentNumber = mAllPhoto.get(i).getPhotoNumber();
                 if (currentNumber > maxNumber){
                     maxNumber = currentNumber;
                 }
@@ -71,10 +79,10 @@ public class PhotoSelectAdapter extends BaseRecyclerAdapter<PhotoInfo> {
             int mNumberText = maxNumber + 1;
             mDatas.get(position).setPhotoNumber(mNumberText);
         }else {//取消状态
-            for (int j = 0; j < mDatas.size(); j++){
-                int currentNumber = mDatas.get(j).getPhotoNumber();
+            for (int j = 0; j < mAllPhoto.size(); j++){
+                int currentNumber = mAllPhoto.get(j).getPhotoNumber();
                 if (currentNumber > mNumber){//将取消的数字之后的选中的数字大小-1
-                    mDatas.get(j).setPhotoNumber(currentNumber - 1);
+                    mAllPhoto.get(j).setPhotoNumber(currentNumber - 1);
                 }
             }
             mDatas.get(position).setPhotoNumber(0);

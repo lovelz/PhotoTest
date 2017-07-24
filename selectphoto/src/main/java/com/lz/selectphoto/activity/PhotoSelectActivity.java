@@ -1,5 +1,6 @@
 package com.lz.selectphoto.activity;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -26,6 +27,7 @@ import com.lz.selectphoto.view.FolderPopupWindow;
 import com.lz.selectphoto.view.SpaceGridItemDecoration;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +40,9 @@ import java.util.List;
 public class PhotoSelectActivity extends AppCompatActivity implements View.OnClickListener,
         PhotoSelectAdapter.onPhotoSelectListener{
 
+    private static final String TAG = PhotoSelectActivity.class.getSimpleName();
+
+    private static final int PREVIEW_RESULT_CODE = 1;
     //显示照片列表的RecyclerView
     private RecyclerView mPhotoRecycler;
 
@@ -76,6 +81,9 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
 
         mFolderSelect = (LinearLayout) findViewById(R.id.photo_folder_select);
         mFolderSelect.setOnClickListener(this);
+        findViewById(R.id.photo_preview).setOnClickListener(this);
+        findViewById(R.id.iv_back).setOnClickListener(this);
+        btSend.setOnClickListener(this);
     }
 
     private void initData() {
@@ -90,6 +98,19 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
         mFolderAdapter = new PhotoFolderAdapter(this);
 
         getSupportLoaderManager().initLoader(0, null, mLoaderListener);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK && requestCode == PREVIEW_RESULT_CODE){
+            //返回选择的图片
+            Intent intent = new Intent();
+            intent.putExtra("photo_select_result", (Serializable) mSelectPhoto);
+            setResult(RESULT_OK, intent);
+            finish();
+        }
     }
 
     @Override
@@ -120,7 +141,21 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
                 mFolderPopup = folderPopupWindow;
             }
             mFolderPopup.showAsDropDown(mFolderSelect);
+        }else if (v.getId() == R.id.iv_back){
+            finish();
+        }else if (v.getId() == R.id.photo_preview){
+            //预览图片
+            Intent intent = new Intent(this, PhotoViewActivity.class);
+            intent.putExtra("photo_preview", (Serializable) mSelectPhoto);
+            startActivityForResult(intent, PREVIEW_RESULT_CODE);
+        }else if (v.getId() == R.id.photo_send){
+            //返回选择的图片
+            Intent intent = new Intent();
+            intent.putExtra("photo_select_result", (Serializable) mSelectPhoto);
+            setResult(RESULT_OK, intent);
+            finish();
         }
+
     }
 
     /**
@@ -211,6 +246,8 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
 
                     }while (data.moveToNext());
                 }
+
+                photoSelectAdapter.setAllPhoto(photoInfoList);
 
                 notifyPhotoAdapter(photoInfoList);
 
