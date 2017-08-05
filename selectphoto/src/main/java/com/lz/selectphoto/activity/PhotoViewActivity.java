@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lz.selectphoto.R;
@@ -35,12 +36,20 @@ public class PhotoViewActivity extends AppCompatActivity implements View.OnClick
     private TextView tvNumber;
     //原图总大小
     private TextView mOriginalSize;
+    //选择原图图标
+    private ImageView ivOriginalIcon;
 
+    //点击进来的位置
     private int currentPosition;
 
+    //已选择的图片
     private List<PhotoInfo> mSelectPhoto = new ArrayList<>();
 
+    //初始化选中图片大小
     private long mMaxSize = 0;
+
+    //是否为原图发送
+    private boolean isOriginal = false;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -56,10 +65,12 @@ public class PhotoViewActivity extends AppCompatActivity implements View.OnClick
 
         findViewById(R.id.iv_back).setOnClickListener(this);
         findViewById(R.id.photo_view_send).setOnClickListener(this);
+        findViewById(R.id.photo_view_original_select).setOnClickListener(this);
         vpPhoto = (PreviewPager) findViewById(R.id.photo_view_pager);
         tvPosition = (TextView) findViewById(R.id.photo_view_position);
         tvNumber = (TextView) findViewById(R.id.photo_view_number);
         mOriginalSize = (TextView) findViewById(R.id.photo_view_original_size);
+        ivOriginalIcon = (ImageView) findViewById(R.id.photo_view_select_icon);
         tvNumber.setOnClickListener(this);
 
         initView();
@@ -82,10 +93,10 @@ public class PhotoViewActivity extends AppCompatActivity implements View.OnClick
         int currentNumber = photoInfoList.get(currentPosition).getPhotoNumber();
         if (currentNumber != 0){
             tvNumber.setText(currentNumber + "");
-            tvNumber.setBackgroundResource(R.drawable.sharp_select_bg);
+            tvNumber.setBackgroundResource(R.drawable.shape_select_bg);
         }else {
             tvNumber.setText("");
-            tvNumber.setBackgroundResource(R.drawable.sharp_unselect_bg);
+            tvNumber.setBackgroundResource(R.drawable.shape_unselect_bg);
         }
 
         for (PhotoInfo photoInfo : photoInfoList){
@@ -118,6 +129,20 @@ public class PhotoViewActivity extends AppCompatActivity implements View.OnClick
         } else if (v.getId() == R.id.photo_view_number){
             //改变选中状态
             changePhotoNumber();
+        } else if (v.getId() == R.id.photo_view_original_select){
+            if (mSelectPhoto == null || mSelectPhoto.size() == 0){
+                ToastUtils.showTextToast(this, "请选择图片");
+                return;
+            }
+            //选择原图发送
+            isOriginal = !isOriginal;
+            if (isOriginal){
+                ivOriginalIcon.setImageResource(R.drawable.original_select_icon);
+                mOriginalSize.setVisibility(View.VISIBLE);
+            }else {
+                ivOriginalIcon.setImageResource(R.drawable.shape_unselect_bg);
+                mOriginalSize.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -154,7 +179,7 @@ public class PhotoViewActivity extends AppCompatActivity implements View.OnClick
             photoInfoList.get(changePosition).setPhotoNumber(maxNumber + 1);
             //改变数字圆点的状态
             tvNumber.setText((maxNumber + 1) + "");
-            tvNumber.setBackgroundResource(R.drawable.sharp_select_bg);
+            tvNumber.setBackgroundResource(R.drawable.shape_select_bg);
 
             //改变选择状态以及大小
             mSelectPhoto.add(photoInfoList.get(changePosition));
@@ -174,7 +199,7 @@ public class PhotoViewActivity extends AppCompatActivity implements View.OnClick
             photoInfoList.get(changePosition).setPhotoNumber(0);//置零
             //改变数字圆点的状态
             tvNumber.setText("");
-            tvNumber.setBackgroundResource(R.drawable.sharp_unselect_bg);
+            tvNumber.setBackgroundResource(R.drawable.shape_unselect_bg);
 
             //改变选择状态以及大小
             mSelectPhoto.remove(photoInfoList.get(changePosition));
@@ -223,11 +248,11 @@ public class PhotoViewActivity extends AppCompatActivity implements View.OnClick
         if (currentNumber != 0){
             //为选中（带有数字标签）
             tvNumber.setText(currentNumber + "");
-            tvNumber.setBackgroundResource(R.drawable.sharp_select_bg);
+            tvNumber.setBackgroundResource(R.drawable.shape_select_bg);
         }else {
             //不为选中
             tvNumber.setText("");
-            tvNumber.setBackgroundResource(R.drawable.sharp_unselect_bg);
+            tvNumber.setBackgroundResource(R.drawable.shape_unselect_bg);
         }
     }
 

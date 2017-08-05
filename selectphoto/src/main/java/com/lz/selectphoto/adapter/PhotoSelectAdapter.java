@@ -46,7 +46,7 @@ public class PhotoSelectAdapter extends BaseRecyclerAdapter<PhotoInfo> {
         int mPositionNumber = mDatas.get(position).getPhotoNumber();
         photoHolder.tvNumber.setText(mPositionNumber == 0 ? "" : String.valueOf(mPositionNumber));
         photoHolder.tvNumber.setBackgroundResource(mPositionNumber == 0 ?
-                R.drawable.sharp_unselect_bg : R.drawable.sharp_select_bg);
+                R.drawable.shape_unselect_bg : R.drawable.shape_select_bg);
 
         photoHolder.flSelect.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,7 +92,7 @@ public class PhotoSelectAdapter extends BaseRecyclerAdapter<PhotoInfo> {
         int mPositionNumber = mDatas.get(position).getPhotoNumber();
         tvNumber.setText(mPositionNumber == 0 ? "" : String.valueOf(mPositionNumber));
         tvNumber.setBackgroundResource(mPositionNumber == 0 ?
-                R.drawable.sharp_unselect_bg : R.drawable.sharp_select_bg);
+                R.drawable.shape_unselect_bg : R.drawable.shape_select_bg);
 
         if (onPhotoSelectListener != null){
             onPhotoSelectListener.onPhotoSelect(mDatas.get(position));

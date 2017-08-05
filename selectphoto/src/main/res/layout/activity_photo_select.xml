@@ -55,6 +55,11 @@
         android:layout_weight="1"
         android:scrollbars="none"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/light_bg"/>
+
     <FrameLayout
         android:layout_width="match_parent"
         android:background="@color/white"

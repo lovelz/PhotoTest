@@ -34,7 +34,7 @@
             android:layout_height="20dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/sharp_select_bg"
+            android:background="@drawable/shape_select_bg"
             android:layout_marginRight="10dp"
             android:textColor="@color/white"
             android:gravity="center"
@@ -46,7 +46,13 @@
         android:id="@+id/photo_view_pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:background="@color/black"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/light_bg"/>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -62,7 +68,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="原图"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 android:layout_gravity="center_vertical"
                 android:paddingLeft="20dp"
                 android:textColor="@color/black"/>
@@ -72,8 +78,8 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="4dp"
-                android:background="@drawable/sharp_unselect_bg"/>
+                android:layout_marginLeft="6dp"
+                android:src="@drawable/shape_unselect_bg"/>
 
             <TextView
                 android:id="@+id/photo_view_original_size"
@@ -82,7 +88,8 @@
                 android:layout_gravity="center_vertical"
                 android:textColor="@color/black"
                 android:textSize="14sp"
-                android:paddingLeft="4dp"/>
+                android:paddingLeft="4dp"
+                android:visibility="gone"/>
 
         </LinearLayout>
 

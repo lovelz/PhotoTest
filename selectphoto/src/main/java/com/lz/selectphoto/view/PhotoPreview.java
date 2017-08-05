@@ -165,8 +165,26 @@ public class PhotoPreview extends AppCompatImageView{
         if (drawable == null) return;
         mBoundWidth = drawable.getBounds().width();
         mBoundHeight = drawable.getBounds().height();
+        Log.d(TAG, "mBoundWidth-->" + mBoundWidth + "  width-->" + width);
+        Log.d(TAG, "mBoundHeight-->" + mBoundHeight + "  height-->" + height);
         //得到此时的缩放比例（以宽为标准，让宽度充满屏幕，因为手机屏幕都是宽度比高度要小）
-        float scale = (float) mBoundWidth / width;
+        float scale;
+//        int leftMargin = 0;
+//        if (mBoundHeight >= height){
+//            scale = (float) mBoundHeight / height;
+//            //重置宽高边界
+//            mBoundHeight = height;
+//            mBoundWidth /= scale;
+//            leftMargin = (width - mBoundWidth) / 2;
+//        } else {
+//            scale = (float) mBoundWidth / width;
+//            //重置宽高边界
+//            mBoundHeight /= scale;
+//            mBoundWidth = width;
+//            leftMargin = 0;
+//        }
+
+        scale = (float) mBoundWidth / width;
         //重置宽高边界
         mBoundHeight /= scale;
         mBoundWidth = width;
@@ -175,6 +193,17 @@ public class PhotoPreview extends AppCompatImageView{
 
         translateLeft = 0;
         translateTop = getDefaultTranslateTop(height, mBoundHeight);
+    }
+
+    /**
+     * 得到X轴上的偏移量
+     * @param mBoundWidth 新高度
+     * @param width 原高度
+     * @return
+     */
+    private float getDefaultTranslateLeft(int width, int mBoundWidth) {
+        float top = (width - mBoundWidth) / 2.f;
+        return top > 0 ? top : 0;
     }
 
     /**
