@@ -93,11 +93,12 @@ public class PhotoSelectAdapter extends BaseRecyclerAdapter<PhotoInfo> {
         tvNumber.setText(mPositionNumber == 0 ? "" : String.valueOf(mPositionNumber));
         tvNumber.setBackgroundResource(mPositionNumber == 0 ?
                 R.drawable.sharp_unselect_bg : R.drawable.sharp_select_bg);
-        notifyDataSetChanged();
 
         if (onPhotoSelectListener != null){
             onPhotoSelectListener.onPhotoSelect(mDatas.get(position));
         }
+
+        notifyDataSetChanged();
 
     }
 

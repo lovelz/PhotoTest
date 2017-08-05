@@ -4,6 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="black">#000000</color>
     <color name="translate">#00000000</color>
-    <color name="theme_color">#303F9F</color>
+    <color name="theme_color">#007cff</color>
+    <color name="point_color">#2ABFFD</color>
 
 </resources>

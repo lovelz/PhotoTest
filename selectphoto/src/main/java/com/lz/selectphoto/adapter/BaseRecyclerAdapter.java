@@ -67,6 +67,10 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter {
         return mDatas.size();
     }
 
+    public List<T> getDatas() {
+        return mDatas;
+    }
+
     /**
      * 添加多个数据
      * @param datas

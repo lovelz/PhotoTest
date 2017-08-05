@@ -42,6 +42,16 @@ public class PhotoPreview extends AppCompatImageView{
 
     private boolean isAutoScale = false;
 
+    private OnReachBorderListener onReachBorderListener;
+
+    public interface OnReachBorderListener {
+        void onReachBorder(boolean isReached);
+    }
+
+    public void setOnReachBorderListener(OnReachBorderListener l) {
+        onReachBorderListener = l;
+    }
+
     public PhotoPreview(Context context) {
         this(context, null);
     }
@@ -287,6 +297,9 @@ public class PhotoPreview extends AppCompatImageView{
                 translateTop -= distanceY * 1.2;
                 translateTop = getExplicitTranslateTop(translateTop);
             }
+
+            if (onReachBorderListener != null)
+                onReachBorderListener.onReachBorder(isReachBorder);
 
             invalidate();
             return true;

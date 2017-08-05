@@ -8,7 +8,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="#303F9F">
+        android:background="@color/theme_color">
 
         <ImageView
             android:id="@+id/iv_back"
@@ -30,21 +30,19 @@
 
         <TextView
             android:id="@+id/photo_view_number"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:padding="5dp"
-            android:layout_marginRight="5dp"
-            android:text="1"
+            android:background="@drawable/sharp_select_bg"
+            android:layout_marginRight="10dp"
             android:textColor="@color/white"
             android:gravity="center"
-            android:textSize="13sp"
-            android:visibility="gone"/>
+            android:textSize="12sp"/>
 
     </RelativeLayout>
 
-    <android.support.v4.view.ViewPager
+    <com.lz.selectphoto.view.PreviewPager
         android:id="@+id/photo_view_pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -58,7 +56,7 @@
             android:id="@+id/photo_view_original_select"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -71,10 +69,11 @@
 
             <ImageView
                 android:id="@+id/photo_view_select_icon"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="4dp"/>
+                android:layout_marginLeft="4dp"
+                android:background="@drawable/sharp_unselect_bg"/>
 
             <TextView
                 android:id="@+id/photo_view_original_size"
@@ -93,7 +92,9 @@
             android:layout_height="40dp"
             android:layout_gravity="end|center_vertical"
             android:layout_marginRight="10dp"
-            android:text="确定"/>
+            android:text="确定"
+            android:background="@color/theme_color"
+            android:textColor="@color/white"/>
 
     </FrameLayout>
 
