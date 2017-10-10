@@ -25,8 +25,12 @@ public class PhotoSelectAdapter extends BaseRecyclerAdapter<PhotoInfo> {
 
     private List<PhotoInfo> mAllPhoto;
 
-    public PhotoSelectAdapter(Context context){
+    private boolean isRadio;
+
+    public PhotoSelectAdapter(Context context, boolean isRadio){
         super(context);
+
+        this.isRadio = isRadio;
     }
 
     public void setAllPhoto(List<PhotoInfo> mAllPhoto) {
@@ -41,6 +45,9 @@ public class PhotoSelectAdapter extends BaseRecyclerAdapter<PhotoInfo> {
     @Override
     protected void onBindDefaultViewHolder(RecyclerView.ViewHolder holder, final int position) {
         final PhotoHolder photoHolder = (PhotoHolder) holder;
+
+        photoHolder.tvNumber.setVisibility(isRadio ? View.GONE : View.VISIBLE);
+
         Glide.with(mContext).load(mDatas.get(position).getPhotoPath()).into(photoHolder.ivPhoto);
 
         int mPositionNumber = mDatas.get(position).getPhotoNumber();

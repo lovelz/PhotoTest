@@ -10,6 +10,7 @@
 
         <activity android:name=".activity.PhotoSelectActivity"/>
         <activity android:name=".activity.PhotoViewActivity"/>
+        <activity android:name=".activity.PhotoCropActivity"/>
 
     </application>
 

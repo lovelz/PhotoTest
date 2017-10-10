@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -46,6 +47,7 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
     private static final String TAG = PhotoSelectActivity.class.getSimpleName();
 
     private static final int PREVIEW_RESULT_CODE = 1;
+    private static final int PREVIEW_CROP_CODE = 2;
 
     //显示照片列表的RecyclerView
     private RecyclerView mPhotoRecycler;
@@ -58,12 +60,16 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
     private ImageView mFolderIcon;
     private PhotoFolderAdapter mFolderAdapter;
     private TextView mFolderName;
+    private FrameLayout mPhotoBottom;
 
     //文件夹下的全部图片
     private ArrayList<PhotoInfo> mAllPhoto = new ArrayList<>();
     //选中的图片
     private List<PhotoInfo> mSelectPhoto = new ArrayList<>();
     private ArrayList<PhotoInfo> photoInfoList;
+
+    //是否为单选
+    private boolean isRadio;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -85,6 +91,7 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
         mFolderIcon = (ImageView) findViewById(R.id.folder_select_icon);
         mPhotoRecycler = (RecyclerView) findViewById(R.id.photo_select_recycler);
         btSend = (Button) findViewById(R.id.photo_send);
+        mPhotoBottom = (FrameLayout) findViewById(R.id.photo_select_bottom);
 
         mFolderSelect = (LinearLayout) findViewById(R.id.photo_folder_select);
         mFolderSelect.setOnClickListener(this);
@@ -94,11 +101,15 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void initData() {
+
+        isRadio = getIntent().getBooleanExtra("is_radio", false);
+        mPhotoBottom.setVisibility(isRadio ? View.GONE : View.VISIBLE);
+
         //set layoutManager
         mPhotoRecycler.setLayoutManager(new GridLayoutManager(this, 3));
         mPhotoRecycler.addItemDecoration(new SpaceGridItemDecoration((int) TDevice.dipToPx(getResources(), 2)));
         //set adapter
-        photoSelectAdapter = new PhotoSelectAdapter(this);
+        photoSelectAdapter = new PhotoSelectAdapter(this, isRadio);
         mPhotoRecycler.setAdapter(photoSelectAdapter);
         photoSelectAdapter.setOnPhotoSelectListener(this);
 
@@ -155,6 +166,13 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
                 setResult(RESULT_OK, intent);
                 finish();
             }
+        } else if (resultCode == RESULT_OK && requestCode == PREVIEW_CROP_CODE) {
+            if (data.getExtras() == null) return;
+            String cropPath = data.getStringExtra("crop_path");
+            Intent intent = new Intent();
+            intent.putExtra("already_crop_path", cropPath);
+            setResult(RESULT_OK, intent);
+            finish();
         }
     }
 
@@ -236,10 +254,17 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void onItemClick(int position, long itemId) {
-        Intent intent = new Intent(this, PhotoViewActivity.class);
-        intent.putExtra("photo_preview", (Serializable) photoSelectAdapter.getDatas());
-        intent.putExtra("photo_preview_position", position);
-        startActivityForResult(intent, PREVIEW_RESULT_CODE);
+        Intent intent;
+        if (isRadio) {
+            intent = new Intent(this, PhotoCropActivity.class);
+            intent.putExtra("crop_photo_path", photoSelectAdapter.getItem(position).getPhotoPath());
+            startActivityForResult(intent, PREVIEW_CROP_CODE);
+        } else {
+            intent = new Intent(this, PhotoViewActivity.class);
+            intent.putExtra("photo_preview", (Serializable) photoSelectAdapter.getDatas());
+            intent.putExtra("photo_preview_position", position);
+            startActivityForResult(intent, PREVIEW_RESULT_CODE);
+        }
     }
 
     private class PhotoLoaderListener implements LoaderManager.LoaderCallbacks<Cursor> {

@@ -1,8 +1,8 @@
 package com.hao.phototest;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
@@ -38,8 +38,12 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK && requestCode == SELECT_PHOTO_CODE){
             if (data.getExtras() == null) return;
             List<PhotoInfo> selectPhotoList = (List<PhotoInfo>) data.getExtras().getSerializable("photo_select_result");
-            if (selectPhotoList == null || selectPhotoList.size() == 0) return;
-            ToastUtils.showTextToast(MainActivity.this, selectPhotoList.size() + "");
+//            if (selectPhotoList == null || selectPhotoList.size() == 0) return;
+//            ToastUtils.showTextToast(MainActivity.this, selectPhotoList.size() + "");
+
+            String alreadyCropPath = data.getStringExtra("already_crop_path");
+            ToastUtils.showTextToast(MainActivity.this, alreadyCropPath);
+
         }
     }
 }
