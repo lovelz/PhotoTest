@@ -8,7 +8,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.lz.selectphoto.R;
 import com.lz.selectphoto.bean.PhotoInfo;
 import com.lz.selectphoto.utils.ToastUtils;
