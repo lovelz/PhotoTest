@@ -102,7 +102,8 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
 
     private void initData() {
 
-        isRadio = getIntent().getBooleanExtra("is_radio", false);
+        Bundle buildBundle = getIntent().getBundleExtra("photo_build");
+        isRadio = buildBundle.getBoolean("is_radio");
         mPhotoBottom.setVisibility(isRadio ? View.GONE : View.VISIBLE);
 
         //set layoutManager
